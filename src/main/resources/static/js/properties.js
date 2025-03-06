@@ -48,14 +48,7 @@ const renderProperties = (properties) => {
         const updateButton = propertyElement.querySelector('.update-button');
         updateButton.addEventListener('click', (event) => {
             const propertyId = event.target.dataset.id;
-            let formCreate = document.getElementById("createP");
-            let formUpdate = document.getElementById("updateP");
-            if (formUpdate.style.display === "none" || formUpdate.style.display === "") {
-                formCreate.style.display = "none";
-                formUpdate.style.display = "block";
-            } else {
-                formUpdate.style.display = "none";
-            }
+            updateProperty(propertyId);
         });
 
 
@@ -99,8 +92,110 @@ async function create(event) {
     }
 }
 
+async function updateProperty(propertyId){
+    const pathname = window.location.pathname;
+    const segments = pathname.split('/');
+    const url = `/api/v1/properties/property/${propertyId}`;
+    fetchproperty(url,propertyId);
+
+};
+
+    
+async function fetchproperty(url,propertyId) {
+    try {
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        if (!response.ok) {
+            throw new Error('Error fetching properties');
+        }
+        const property = await response.json();
+        renderproperty(property,propertyId);
+
+    } catch (error) {
+        console.error('Error al obtener los datos:', error);
+        document.querySelector('.container').innerHTML = `
+        <div class="error-message">
+            <h2>¡Ups! Algo salió mal</h2>
+            <p>No pudimos cargar el procedimiento en este momento. Esto podría deberse a un problema con el servidor o la conexión a internet.</p>
+            <p><strong>Por favor, intenta nuevamente más tarde.</strong></p>
+            <p>Si el problema persiste, contacta al soporte técnico.</p>
+        </div>
+        `;
+        return [];
+    }
+};
+
+// Llenar la informacion del form 
+async function renderproperty(property,propertyId) {
+    const propertyContainer = document.querySelector('.box-static');
+    propertyContainer.innerHTML = '';
+
+    propertyContainer.innerHTML = `
+        <form class="property-form">
+            <h2>Update a Property</h2>
+            <label for="address">Address</label>
+            <input type="text" id="address" name="address" value="${property.address}" required>
+        
+            <label for="price">Price</label>
+            <input type="number" id="price" name="price" value="${property.price}" required>
+        
+            <label for="size">Size</label>
+            <input type="number" id="size" name="size" value="${property.size}" required>
+        
+            <label for="description">Description</label>
+            <textarea id="description" name="description" required>${property.description}</textarea>
+        
+            <div class="button-container">
+                <button class="cancel-button">Cancelar</button>
+                <button class="accept-button">Aceptar</button>
+            </div>
+        </form>
+    `;
+    const acceptButton = document.querySelector('.accept-button');
+        acceptButton.addEventListener('click', (event) => {
+            event.preventDefault();
+            update(propertyId);
+        });
+    const cancelButton = document.querySelector('.cancel-button');
+    cancelButton.addEventListener('click', (event) => {
+        event.preventDefault();
+        cancelSubmit(propertyId);
+    });
+};
+
+async function update(propertyId) {  
+    const url = `/api/v1/properties/update/${propertyId}`;
+    const formData = new FormData(document.querySelector(".property-form")); 
+    const propertyData = {
+        address: formData.get("address"),
+        price: formData.get("price"),
+        size: formData.get("size"),
+        description: formData.get("description"),
+    };
+    try {
+        
+        const response = await fetch(url, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(propertyData)  
+        });
+
+        if (!response.ok) throw new Error(`Error saving property: ${response.statusText}`);
+
+        await response.json();  
+        window.location.href = "/home";  
+    } catch (error) {
+        console.error("Error saving property:", error);
+        alert("There was an error saving the property. Please try again.");
+    }
+}
+
 document.addEventListener("DOMContentLoaded", () => {
     const form = document.querySelector(".property-form");
     form.addEventListener("submit", create);
-    getAllProperties();  // Fetch the properties when the page is loaded
+    getAllProperties();  
 });
