@@ -48,8 +48,16 @@ const renderProperties = (properties) => {
         const updateButton = propertyElement.querySelector('.update-button');
         updateButton.addEventListener('click', (event) => {
             const propertyId = event.target.dataset.id;
-            
+            let formCreate = document.getElementById("createP");
+            let formUpdate = document.getElementById("updateP");
+            if (formUpdate.style.display === "none" || formUpdate.style.display === "") {
+                formCreate.style.display = "none";
+                formUpdate.style.display = "block";
+            } else {
+                formUpdate.style.display = "none";
+            }
         });
+
 
         const deleteButton = propertyElement.querySelector('.delete-button');
         deleteButton.addEventListener('click', (event) => {

@@ -74,7 +74,7 @@ h2 {
 }
 
 .property-form textarea {
-    height: 
+    height: auto;
     resize: none;
 }
 
@@ -301,7 +301,9 @@ form button:hover img {
     filter: invert(43%) sepia(96%) saturate(470%) hue-rotate(330deg) brightness(97%) contrast(101%);
 }
 
-
+#updateP {
+    display: none;
+}
 
 
 @media (max-width: 480px) {
