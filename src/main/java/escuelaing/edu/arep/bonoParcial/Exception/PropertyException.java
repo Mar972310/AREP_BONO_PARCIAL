@@ -1,20 +1,32 @@
 package escuelaing.edu.arep.bonoParcial.Exception;
 
-public class PropertyException extends Exception{
+/**
+ * Custom exception class for property-related errors.
+ */
+public class PropertyException extends Exception {
 
-    public final static String PROPERTY_NOT_FOUND = "The property hasn't been found";
-    public final static String ID_INVALID = "The id provided is not valid";
-    public final static String PROPERTY_NOT_UPDATE = "The property could be updated";
-    public final static String PROPERTY_NOT_CREATE = "The property could be created";
-    public final static String PROPERTY_NOT_DELTETE = "The property could be deleted";
+    public static final String PROPERTY_NOT_FOUND = "The property hasn't been found";
+    public static final String ID_INVALID = "The ID provided is not valid";
+    public static final String PROPERTY_NOT_UPDATE = "The property could not be updated";
+    public static final String PROPERTY_NOT_CREATE = "The property could not be created";
+    public static final String PROPERTY_NOT_DELETE = "The property could not be deleted";
 
-    public PropertyException(String message){
+    /**
+     * Constructs a new PropertyException with the specified message.
+     *
+     * @param message The detail message.
+     */
+    public PropertyException(String message) {
         super(message);
     }
 
-    public PropertyException(String message, String e){
-        super("The requested property with id:"+ e +" hasn't been found");
+    /**
+     * Constructs a new PropertyException with a message related to a specific property ID.
+     *
+     * @param message The detail message.
+     * @param id The ID of the property that caused the exception.
+     */
+    public PropertyException(String message, String id) {
+        super("The requested property with ID: " + id + " hasn't been found");
     }
-
-    
 }
