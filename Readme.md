@@ -246,8 +246,6 @@ This system follows a **layered architecture** where each layer has a distinct r
 - **Repository Layer:** The `PropertyRepository` interface is responsible for database operations.
 
 
-![Classdiagram](imagenes/clases.png)
-
 
 ## Deployment on AWS
 
