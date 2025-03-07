@@ -1,0 +1,47 @@
+1. creamos base de datos en el primer servidor
+docker run -p 3306:3306 --name properties -e MYSQL_ROOT_PASSWORD=my-secret-pw -d mysql:latest
+L_ROOT_PASSWORD=my-secret-pw -d mysql:latest
+Unable to find image 'mysql:latest' locally
+latest: Pulling from library/mysql
+43759093d4f6: Pull complete
+d255dceb9ed5: Pull complete
+23d22e42ea50: Pull complete
+431b106548a3: Pull complete
+2be0d473cadf: Pull complete
+f56a22f949f9: Pull complete
+277ab5f6ddde: Pull complete
+df1ba1ac457a: Pull complete
+cc9646b08259: Pull complete
+893b018337e2: Pull complete
+Digest: sha256:146682692a3aa409eae7b7dc6a30f637c6cb49b6ca901c2cd160becc81127d3b
+Status: Downloaded newer image for mysql:latest
+1aba2bdd6cfed639f931cef56936c48a49c1a1a3860ff5b979c9cf6b888060e7
+
+
+2. Configuracion de los puertos del servidor, para este paso tendremos que habilitar el puerto 3306, con la opcion de que cualquier ip pueda acceder por ese puerto
+3. Probamos que efectivamente que nos podemos conectar a esa base de datos mediante DBeaver o desde el misma aplicacion desde la maquina local
+4. Con la IP del servidor ya podremos configurar el Dockerfile y el aplication properties
+spring.application.name=bonoParcial
+spring.datasource.url=${SPRING_DATASOURCE_URL}
+spring.datasource.username=${SPRING_DATASOURCE_USERNAME}
+spring.datasource.password=${SPRING_DATASOURCE_PASSWORD}
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQL8Dialect
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+
+5. Pasos de creacion de la imagen:
+- Incluir todas las dependencias, esto lo haremos agregando un plugin en el pom.xml
+<plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-dependency-plugin</artifactId>
+    <version>3.0.1</version>
+    <executions>
+        <execution>
+            <id>copy-dependencies</id>
+            <phase>package</phase>
+            <goals><goal>copy-dependencies</goal></goals>
+        </execution>
+    </executions>
+</plugin>
+-

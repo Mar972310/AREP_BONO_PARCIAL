@@ -55,7 +55,7 @@ const renderProperties = (properties) => {
         const deleteButton = propertyElement.querySelector('.delete-button');
         deleteButton.addEventListener('click', (event) => {
             const propertyId = event.target.dataset.id;
-            deleteProperty(propertyId); 
+            deleteProperty(propertyId) 
         });
 
         container.appendChild(propertyElement);
@@ -193,6 +193,31 @@ async function update(propertyId) {
         alert("There was an error saving the property. Please try again.");
     }
 }
+
+async function deleteProperty(propertyId) {
+    const confirmDelete = confirm("¿Estás seguro de que deseas eliminar esta propiedad?");
+    const url = `/api/v1/properties/delete/${propertyId}`;
+    if (confirmDelete) {
+        try {
+            const response = await fetch(url, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || "Error al eliminar la propiedad");
+            
+            }
+            alert("Procedimiento eliminado correctamente");
+            window.location.href = `/home`;
+        } catch (error) {
+            console.error('Error al eliminar procedimiento:', error);
+            showNotification(error.message || 'Hubo un problema al intentar eliminar la propiedad. Intenta más tarde.');
+        }
+    }
+};
 
 document.addEventListener("DOMContentLoaded", () => {
     const form = document.querySelector(".property-form");
